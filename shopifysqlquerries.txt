@@ -1,0 +1,38 @@
+Question 2: For this question you’ll need to use SQL. Follow this link to access the data set required for the challenge.
+ Please use queries to answer the following questions.
+ Paste your queries along with your final numerical answers below.
+
+
+a.How many orders were shipped by Speedy Express in total?
+
+Select Shippers.Shippers.ShipperName,count(OrderID) 
+from Orders, Shippers
+ where Orders.ShipperID=Shippers.ShipperID and Shippers.ShipperName="Speedy Express";
+
+b.What is the last name of the employee with the most orders?
+
+Select Emplyees.LastName,Count(Orders.OrderID) as NumberOfOrders 
+From Orders
+Left Join Employees On Orders.EmployeeID=Employees>EmployeeID
+Group by LastName Order by NumberOf Orders Desc
+Limit 1;
+
+c.What product was ordered the most by customers in Germany?
+SELECT p.ProductName
+FROM Products p
+INNER JOIN (
+SELECT ProductID, MAX(Quantity)
+FROM (
+SELECT ProductID, SUM(Quantity) as Quantity
+FROM Orders o
+INNER JOIN (
+SELECT CustomerID
+FROM Customers
+WHERE Country = 'Germany') germanCustomer
+ON o.CustomerID = germanCustomer.CustomerID
+INNER JOIN OrderDetails od
+ON od.OrderID = o.OrderID
+GROUP BY ProductID )
+) mP
+ON mP.ProductID = p.ProductID;
+
